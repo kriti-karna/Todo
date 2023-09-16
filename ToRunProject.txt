@@ -1,0 +1,43 @@
+=============== Database: ===============
+
+Used MSSQL
+In TodoDB, only tbo.todo_tbl2 is being used
+
+=========================================
+
+
+=============== Backend/Api: ===============
+
+API is created using .Net C# using Visual Studio
+To run the API, install following dependencies:
+-Microsoft.AspNetCore.Mvc.NewtonsoftJson
+-Microsoft.AspNetCore.OpenApi
+-Swashbuckle.AspNetCore
+-System.Data.SqlClient
+
+============================================
+
+
+=============== Frontend: ===============
+
+Frontend part is created using React-TypeScript with VSCode
+To run the project, following packages should be installed
+react_api@0.0.0 D:\ProjectSpace\ReactApi\react_api
+├── @types/react-dom@18.2.7
+├── @types/react@18.2.21
+├── @vitejs/plugin-react@3.1.0
+├── axios@1.5.0
+├── bootstrap@5.3.1
+├── react-bootstrap@2.8.0
+├── react-dom@18.2.0
+├── react-router-dom@6.15.0
+├── react@18.2.0
+├── typescript@4.9.5
+└── vite@4.4.9
+
+*Run the package install command on Terminal like so:
+*Package install syntax: npm -install 'package-name'
+*Make sure to be inside 'react_api' folder when running this cmd
+*To check all the installed package in project: npm list --depth=0
+
+=========================================

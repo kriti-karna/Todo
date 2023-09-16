@@ -1,0 +1,36 @@
+textarea {
+    resize: vertical;
+  }
+
+.todo-form{
+    display: grid;
+}
+
+.form-item {
+    width: 60%;
+    margin: auto;
+}
+
+.form-label {
+    font-size: 18px;
+}
+
+.form-control {
+    padding: 15px 10px;
+    width: 100%;
+    font-size: 18px;
+}
+
+
+.submit-btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    min-width: 62px;
+    margin: auto;
+    width: fit-content;
+    margin-top: 10px;
+}
+
