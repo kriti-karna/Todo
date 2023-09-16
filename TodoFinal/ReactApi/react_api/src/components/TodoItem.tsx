@@ -42,7 +42,8 @@ function TodoItem(paramItem: Param) {
     //console.log(paramItem.todoId);
   }
 
-  const thisDate = todoDateConv.toISOString().split("T")[0];
+  var thisDate = todoDateConv.toISOString().split("T")[0];
+  //debugger;
   const thisTime = `${todoDateConv
     .getHours()
     .toString()
@@ -54,19 +55,20 @@ function TodoItem(paramItem: Param) {
   //Creating edit functionality manually (not a good thing to do)
   const onEditHandle = () => {
     //debugger;
-    const event = new Event("change", { bubbles: true });
+    const thisDateWithOffset = new Date(
+      todoDateConv.getTime() - todoDateConv.getTimezoneOffset() * 60000
+    ); // Remove the offset
+    thisDate = thisDateWithOffset.toISOString().split("T")[0];
 
     //Id edit:
     var idEdit = document.getElementById("edit_todo_id") as HTMLInputElement;
     idEdit.value = paramItem.todoId.toString();
-    idEdit.dispatchEvent(event);
 
     //Date picker edit:
     var todoDateEdit = document.getElementById(
       "edit_todo_date"
     ) as HTMLInputElement;
     todoDateEdit.value = thisDate.toString();
-    todoDateEdit.dispatchEvent(event);
 
     //Time picker edit:
 
@@ -74,14 +76,12 @@ function TodoItem(paramItem: Param) {
       "edit_todo_time"
     ) as HTMLInputElement;
     todoTimeEdit.value = thisTime.toString();
-    todoTimeEdit.dispatchEvent(event);
 
     //Todo content Edit:
     var todoContentEdit = document.getElementById(
       "edit_todo_content"
     ) as HTMLInputElement;
     todoContentEdit.value = paramItem.todoContent.toString();
-    todoContentEdit.dispatchEvent(event);
 
     document.getElementById("item-views")!.style.display = "none";
     document.getElementById("edit-todo")!.style.removeProperty("display");

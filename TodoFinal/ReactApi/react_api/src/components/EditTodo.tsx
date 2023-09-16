@@ -30,14 +30,29 @@ function EditTodo() {
 
   const handleEditSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     //debugger;
-    var itemId = document.getElementById("edit_todo_id") as HTMLInputElement;
-    var id = itemId.value;
-
     event.preventDefault();
 
+    //Getting id, date, time, content manually from getElementById because other way around did not work
+    var itemId = document.getElementById("edit_todo_id") as HTMLInputElement;
+    var id = itemId.value;
+    var todoDateFromId = document.getElementById(
+      "edit_todo_date"
+    ) as HTMLInputElement;
+    var todoDateValue = todoDateFromId.value;
+    var todoTimeFromId = document.getElementById(
+      "edit_todo_time"
+    ) as HTMLInputElement;
+    var todoTimeValue = todoTimeFromId.value;
+    var todoContentFromId = document.getElementById(
+      "edit_todo_content"
+    ) as HTMLInputElement;
+    var todoContentValue = todoContentFromId.value;
+
     //Get date in desired format
-    const dateParts = todoDate.split("-");
-    const timeParts = todoTime.split(":");
+    const dateParts = todoDateValue.split("-");
+    const timeParts = todoTimeValue.split(":");
+    // const dateParts = todoDate.split("-");
+    // const timeParts = todoTime.split(":");
     const combinedDateTime = new Date(
       Date.UTC(
         Number(dateParts[0]),
@@ -54,7 +69,7 @@ function EditTodo() {
       id: parseInt(id),
       todo_date: formattedDateTime,
       done_date: "",
-      todo_content: todoContent,
+      todo_content: todoContentValue,
       status: 0,
     };
 
