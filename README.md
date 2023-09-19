@@ -1,2 +1,2 @@
 # Todo
- Frontend, Backend & Database(sqlite) for Todo Web Application
+ Frontend, Backend & Database(MSSQL) for Todo Web Application
