@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
-using System.Data;
 using Todo3.Models;
 
 namespace Todo3.Controllers
@@ -14,9 +11,12 @@ namespace Todo3.Controllers
     {
         private readonly IConfiguration _configuration;
 
+        private string dataSource;
+
         public TodoController(IConfiguration configuration)
         {
             _configuration = configuration;
+            dataSource = _configuration.GetConnectionString("TodoAppCon");
         }
 
         /*
@@ -27,67 +27,76 @@ namespace Todo3.Controllers
          * 0 - Deleted
          */
 
+        /// <summary>
+        /// 指定されたステータス フィルターに基づいて ToDo アイテムのリストを取得
+        /// </summary>
+        /// <param name="st">ステータスフィルター (任意).</param>
+        /// <returns>Todo 項目のリストを含む JsonResult を返す</returns>
+
         [HttpGet("GetTodo")]
         public JsonResult GetTodo(int? st)
         {
+
+            //Return all todo except for deleted ones
             string rawQuery = "select * from dbo.todo_tbl2 where status != 0";
 
-            if(st.HasValue)
+            if (st.HasValue)
             {
-                rawQuery += " and status = " + st;
+                rawQuery += " AND status = @status";
             }
-            //Return all todo except for deleted ones
 
             DataTable table = new DataTable();
-            //Connection string:
-            string dataSource = _configuration.GetConnectionString("TodoAppCon");
 
-            SqlDataReader reader;
-
-            using(SqlConnection conn = new SqlConnection(dataSource))
+            using (SqlConnection conn = new SqlConnection(dataSource))
             {
                 conn.Open();
-                using(SqlCommand cmd = new SqlCommand(rawQuery, conn))
+                using (SqlCommand cmd = new SqlCommand(rawQuery, conn))
                 {
-                    reader = cmd.ExecuteReader();
-                    table.Load(reader);
-
-                    reader.Close();
-                    conn.Close();
+                    if (st.HasValue)
+                    {
+                        cmd.Parameters.AddWithValue("@status", st);
+                    }
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        table.Load(reader);
+                    }
                 }
             }
 
             return new JsonResult(table);
         }
 
+        /// <summary>
+        /// 新しい TODO の追加
+        /// </summary>
+        /// <param name="todo">TODO アイテム</param>
+        /// <returns>操作の結果を示す JsonResult を返す</returns>
+
         [HttpPost("AddNewTodo")]
         public JsonResult AddNewTodo([FromBody] TodoTbl todo)
         {
             try
             {
-                if(todo.todo_content.Length > 100)
+                if (todo.todo_content.Length > 100)
                 {
                     todo.todo_content = todo.todo_content.Substring(0, 100);
                 }
-                string rawQuery = "insert into dbo.todo_tbl2 values ('" + todo.todo_date + "', " +
-            "null, N'" + todo.todo_content + "', 1)";
+                string rawQuery = "insert into dbo.todo_tbl2 values ('@tododate', " +
+                    "null, N'@todocontent', 1)";
 
                 DataTable table = new DataTable();
-                //Connection string:
-                string dataSource = _configuration.GetConnectionString("TodoAppCon");
-
-                SqlDataReader reader;
 
                 using (SqlConnection conn = new SqlConnection(dataSource))
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(rawQuery, conn))
                     {
-                        reader = cmd.ExecuteReader();
-                        table.Load(reader);
-
-                        reader.Close();
-                        conn.Close();
+                        cmd.Parameters.AddWithValue("@tododate", todo.todo_date);
+                        cmd.Parameters.AddWithValue("@todocontent", todo.todo_content);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            table.Load(reader);
+                        }
                     }
                 }
 
@@ -99,12 +108,19 @@ namespace Todo3.Controllers
             }
         }
 
+        /// <summary>
+        /// TODO の変更
+        /// </summary>
+        /// <param name="id">TODO の ID</param>
+        /// <param name="todo">変更する TODO アイテム</param>
+        /// <returns>操作の結果を示す JsonResult を返す</returns>
+
         [HttpPost("EditTodo")]
         public JsonResult EditTodo(int id, [FromBody] TodoTbl todo)
         {
             try
             {
-                if(id == 0)
+                if (id == 0)
                 {
                     throw new Exception();
                 }
@@ -112,26 +128,23 @@ namespace Todo3.Controllers
                 {
                     todo.todo_content = todo.todo_content.Substring(0, 100);
                 }
-                string rawQuery = @"update dbo.todo_tbl2 set todo_date = '" +
-                    todo.todo_date + @"', todo_content = N'" + todo.todo_content + @"'
-                where id = " + id;
+                string rawQuery = @"update dbo.todo_tbl2 set todo_date = '@todotade', todo_content = N'@todocontent'
+                    where id = @todoid";
 
                 DataTable table = new DataTable();
-                //Connection string:
-                string dataSource = _configuration.GetConnectionString("TodoAppCon");
-
-                SqlDataReader reader;
 
                 using (SqlConnection conn = new SqlConnection(dataSource))
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(rawQuery, conn))
                     {
-                        reader = cmd.ExecuteReader();
-                        table.Load(reader);
-
-                        reader.Close();
-                        conn.Close();
+                        cmd.Parameters.AddWithValue("@tododate", todo.todo_date);
+                        cmd.Parameters.AddWithValue("@todocontent", todo.todo_content);
+                        cmd.Parameters.AddWithValue("@todoid", todo.id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            table.Load(reader);
+                        }
                     }
                 }
 
@@ -142,6 +155,13 @@ namespace Todo3.Controllers
                 return new JsonResult("error");
             }
         }
+
+        /// <summary>
+        /// TODO のステータスの変更
+        /// </summary>
+        /// <param name="id">TODO の ID</param>
+        /// <param name="status">新しいステータス</param>
+        /// <returns>操作の結果を示す JsonResult を返す</returns>
 
         [HttpPost("ChangeStatus")]
         public JsonResult ChangeStatus(int id, int status)
@@ -154,44 +174,37 @@ namespace Todo3.Controllers
                     throw new Exception();
                 }
 
-                if(status > 3 || status < 0)
+                if (status > 3 || status < 0)
                 {
                     //status cannot be anything other than 0, 1, 2, 3
                     throw new Exception();
                 }
-                //2021-01-01 05:30:00.000
                 string today = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
                 string rawQuery = "";
 
-                if(status == 2)
+                if (status == 2)
                 {
                     rawQuery = @"UPDATE dbo.todo_tbl2 SET done_date = '" + today +
-                        @"', status = 2 where id = " + id;
+                        @"', status = 2 where id = @todoid";
                 }
                 else
                 {
-                    rawQuery = @"update dbo.todo_tbl2 set status = " +
-                    status + @" where id = " + id;
+                    rawQuery = @"update dbo.todo_tbl2 set status = @todostatus where id = @todoid";
                 }
 
-                
-
                 DataTable table = new DataTable();
-                //Connection string:
-                string dataSource = _configuration.GetConnectionString("TodoAppCon");
-
-                SqlDataReader reader;
 
                 using (SqlConnection conn = new SqlConnection(dataSource))
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(rawQuery, conn))
                     {
-                        reader = cmd.ExecuteReader();
-                        table.Load(reader);
-
-                        reader.Close();
-                        conn.Close();
+                        cmd.Parameters.AddWithValue("@todoid", id);
+                        cmd.Parameters.AddWithValue("@todostatus", status);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            table.Load(reader);
+                        }
                     }
                 }
 

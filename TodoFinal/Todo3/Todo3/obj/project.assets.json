@@ -1161,11 +1161,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\ProjectSpace\\Todo3\\Todo3\\Todo3.csproj",
+      "projectUniqueName": "C:\\Users\\Kriti Karna\\Documents\\GitHub\\Todo\\TodoFinal\\Todo3\\Todo3\\Todo3.csproj",
       "projectName": "Todo3",
-      "projectPath": "D:\\ProjectSpace\\Todo3\\Todo3\\Todo3.csproj",
+      "projectPath": "C:\\Users\\Kriti Karna\\Documents\\GitHub\\Todo\\TodoFinal\\Todo3\\Todo3\\Todo3.csproj",
       "packagesPath": "C:\\Users\\Kriti Karna\\.nuget\\packages\\",
-      "outputPath": "D:\\ProjectSpace\\Todo3\\Todo3\\obj\\",
+      "outputPath": "C:\\Users\\Kriti Karna\\Documents\\GitHub\\Todo\\TodoFinal\\Todo3\\Todo3\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Kriti Karna\\AppData\\Roaming\\NuGet\\NuGet.Config",
