@@ -61,24 +61,23 @@ function TodoItem(paramItem: Param) {
     thisDate = thisDateWithOffset.toISOString().split("T")[0];
 
     //Id edit:
-    var idEdit = document.getElementById("edit_todo_id") as HTMLInputElement;
+    const idEdit = document.getElementById("edit_todo_id") as HTMLInputElement;
     idEdit.value = paramItem.todoId.toString();
 
     //Date picker edit:
-    var todoDateEdit = document.getElementById(
+    const todoDateEdit = document.getElementById(
       "edit_todo_date"
     ) as HTMLInputElement;
     todoDateEdit.value = thisDate.toString();
 
     //Time picker edit:
-
-    var todoTimeEdit = document.getElementById(
+    const todoTimeEdit = document.getElementById(
       "edit_todo_time"
     ) as HTMLInputElement;
     todoTimeEdit.value = thisTime.toString();
 
     //Todo content Edit:
-    var todoContentEdit = document.getElementById(
+    const todoContentEdit = document.getElementById(
       "edit_todo_content"
     ) as HTMLInputElement;
     todoContentEdit.value = paramItem.todoContent.toString();
@@ -87,8 +86,8 @@ function TodoItem(paramItem: Param) {
     document.getElementById("edit-todo")!.style.removeProperty("display");
   };
 
-  var thisDatePart = thisDate.split("-");
-  console.log(thisDate);
+  const thisDatePart = thisDate.split("-");
+  //console.log(thisDate);
   return (
     <>
       <div className={"item-container container-" + paramItem.status}>

@@ -33,20 +33,20 @@ function EditTodo() {
     event.preventDefault();
 
     //Getting id, date, time, content manually from getElementById because other way around did not work
-    var itemId = document.getElementById("edit_todo_id") as HTMLInputElement;
-    var id = itemId.value;
-    var todoDateFromId = document.getElementById(
+    const itemId = document.getElementById("edit_todo_id") as HTMLInputElement;
+    const id = itemId.value;
+    const todoDateFromId = document.getElementById(
       "edit_todo_date"
     ) as HTMLInputElement;
-    var todoDateValue = todoDateFromId.value;
-    var todoTimeFromId = document.getElementById(
+    const todoDateValue = todoDateFromId.value;
+    const todoTimeFromId = document.getElementById(
       "edit_todo_time"
     ) as HTMLInputElement;
-    var todoTimeValue = todoTimeFromId.value;
-    var todoContentFromId = document.getElementById(
+    const todoTimeValue = todoTimeFromId.value;
+    const todoContentFromId = document.getElementById(
       "edit_todo_content"
     ) as HTMLInputElement;
-    var todoContentValue = todoContentFromId.value;
+    const todoContentValue = todoContentFromId.value;
 
     //Get date in desired format
     const dateParts = todoDateValue.split("-");
