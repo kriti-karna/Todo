@@ -1,10 +1,10 @@
 interface Param {
-  btnClickEvent: () => void;
+  onClick: () => void;
 }
 
-function AddBtn({ btnClickEvent }: Param) {
+function AddBtn({ onClick }: Param) {
   return (
-    <button id="add-btn" className="add-btn" onClick={btnClickEvent}>
+    <button id="add-btn" className="add-btn" onClick={onClick}>
       +
     </button>
   );
